@@ -1,23 +1,28 @@
 "use client";
 import { useSession } from "next-auth/react";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import PostModal from "./PostModal";
 import Button from "@/app/components/Button";
 
 interface StarterProps {
   switch: () => void;
-  memberLists: any;
-  setMemberLists: any;
 }
 
 function Starter(props: StarterProps) {
   const [postModal, setPostModal] = useState(false);
   const { data: session } = useSession();
 
+  const modalRef = useRef<HTMLInputElement>(null);
+
   function openPostModal() {
     setPostModal((prev) => !prev);
+  }
+
+  function closePostModal(e: any) {
+    if (modalRef.current === e.target) {
+      openPostModal();
+    }
   }
 
   return (
@@ -34,7 +39,13 @@ function Starter(props: StarterProps) {
       )}
       {postModal && (
         <>
-          <PostModal openPostModal={openPostModal} />
+          <div
+            ref={modalRef}
+            className="fixed inset-0 bg-black/50 flex justify-center items-center z-10"
+            onClick={(e) => closePostModal(e)}
+          >
+            <PostModal openPostModal={openPostModal} />
+          </div>
         </>
       )}
     </>

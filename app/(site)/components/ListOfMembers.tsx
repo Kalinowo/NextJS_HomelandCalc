@@ -12,15 +12,8 @@ interface ListOfMembersProps {
 function ListOfMembers(props: ListOfMembersProps) {
   const { members } = props;
   const { data: session, status } = useSession();
-  const [memberLists, setMemberLists] = useState<any>([]);
   const [selectFamily, setSelectFamily] = useState<string>("");
   const [manageSwitch, setManageSwitch] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (members.length !== 0) {
-      setMemberLists(members);
-    }
-  }, []);
 
   let familyCount = Array.from(
     new Set(members.map((member: any) => member.family))
@@ -36,16 +29,12 @@ function ListOfMembers(props: ListOfMembersProps) {
 
   return (
     <>
-      <Starter
-        switch={turnManageSwitch}
-        memberLists={memberLists}
-        setMemberLists={setMemberLists}
-      />
+      <Starter switch={turnManageSwitch} />
       {session && (
         <>
           <div className="text-3xl my-2 font-bold">{session.user.name}</div>
           <div className="flex flex-col gap-2 w-full px-4 py-2 border-solid border-2 border-black bg-red-50 rounded-xl">
-            {memberLists
+            {members
               .filter((member: any) => member.family === session?.user.name)
               .map((member: any, index: number) => (
                 <div key={index}>
@@ -53,8 +42,6 @@ function ListOfMembers(props: ListOfMembersProps) {
                     member={member}
                     index={index}
                     switchStatus={manageSwitch}
-                    memberLists={memberLists}
-                    setMemberLists={setMemberLists}
                   />
                 </div>
               ))}
@@ -79,9 +66,9 @@ function ListOfMembers(props: ListOfMembersProps) {
               </div>
             ))}
           </div>
-          {!(memberLists.length === 0) && (
+          {!(members.length === 0) && (
             <div className="flex flex-col gap-2 w-full px-4 py-2 border-solid border-2 border-black bg-red-50 rounded-xl">
-              {memberLists
+              {members
                 .filter((member: any) => member.family === selectFamily)
                 .map((member: any, index: number) => (
                   <div key={index}>
@@ -90,7 +77,7 @@ function ListOfMembers(props: ListOfMembersProps) {
                 ))}
             </div>
           )}
-          {memberLists.length === 0 && <div>No Data Yet</div>}
+          {members.length === 0 && <div>No Data Yet</div>}
         </div>
       )}
     </>

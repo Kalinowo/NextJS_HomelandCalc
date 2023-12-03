@@ -29,6 +29,10 @@ button[type="reset"] {
   font-weight: bold;
 }
 
+#svgBtn {
+  background: transparent;
+}
+
 button[disabled] {
   background: gray;
   color: rgb(36, 36, 36);

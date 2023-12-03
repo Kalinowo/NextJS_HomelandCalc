@@ -6,11 +6,10 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import weekday from "dayjs/plugin/weekday";
-
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
 import Button from "@/app/components/Button";
+
+import { renewYesterdayPoint, undoPoint, removeMember } from "@/server/actions";
 import { TiHeartFullOutline } from "react-icons/ti";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { FaUndoAlt } from "react-icons/fa";
@@ -24,83 +23,20 @@ interface IndiviualMemberProps {
   member: any;
   index: number;
   switchStatus?: boolean;
-  memberLists?: any;
-  setMemberLists?: any;
 }
 
 let date = dayjs(new Date()).tz("Asia/Taipei");
 
 function IndiviualMember(props: IndiviualMemberProps) {
   const [flipCard, setFlipCard] = useState<boolean>(false);
-  const [yesterdayPoint, setYesterdayPoint] = useState<any>("");
-  const { member, index, switchStatus, memberLists, setMemberLists } = props;
+  const { member, index, switchStatus } = props;
   const { data: session } = useSession();
-  const router = useRouter();
 
   function flipCardSwitch() {
     setFlipCard((prev) => !prev);
   }
 
   let today = date.format("YYYY-MM-DD");
-
-  function renewYesterdayPoint(
-    yesterdayPoint: any,
-    id: String,
-    undoTotal: any,
-    undoYesterday: any,
-    undoSevendaysum: any
-  ) {
-    let yesterday = parseInt(yesterdayPoint, 10);
-    let sevendaysum = yesterday + undoSevendaysum;
-    let total = yesterday + undoTotal;
-
-    axios
-      .post("/api/yesterday/renew", {
-        id,
-        total,
-        yesterday,
-        sevendaysum,
-        undoYesterday,
-        undoTotal,
-        timeStamp: today,
-      })
-      .then(() => {
-        router.refresh();
-        setYesterdayPoint("");
-        setFlipCard(false);
-      });
-  }
-
-  function undoPoint(
-    id: String,
-    undoTotal: any,
-    undoYesterday: any,
-    undoSevendaysum: any
-  ) {
-    axios
-      .post("/api/yesterday/undo", {
-        id,
-        undoTotal,
-        undoYesterday,
-        undoSevendaysum,
-      })
-      .then(() => {
-        router.refresh();
-      });
-  }
-
-  function removeMember(id: string) {
-    axios
-      .post("/api/member/remove", {
-        id,
-      })
-      .then(() => {
-        const newMemberList = memberLists.filter(
-          (member: any) => member.id !== id
-        );
-        setMemberLists(newMemberList);
-      });
-  }
 
   return (
     <>
@@ -132,30 +68,42 @@ function IndiviualMember(props: IndiviualMemberProps) {
               {member.name}
             </div>
             {switchStatus && (
-              <span
+              //刪除表單
+              <form
                 className="text-2xl hover:text-red-600 cursor-pointer"
-                onClick={() => removeMember(member.id)}
+                action={removeMember}
               >
-                <RiDeleteBin6Fill />
-              </span>
+                <input type="hidden" name="id" value={member.id} />
+                <button id="svgBtn" type="submit">
+                  <RiDeleteBin6Fill />
+                </button>
+              </form>
             )}
           </div>
 
           <div className="flex w-full items-center justify-center whitespace-nowrap gap-1">
             {session && (
-              <span
+              // undo表單
+              <form
                 className="cursor-pointer hover:text-red-600"
-                onClick={() =>
-                  undoPoint(
-                    member.id,
-                    member.undoTotal,
-                    member.undoYesterday,
-                    member.undoSevendaysum
-                  )
-                }
+                action={undoPoint}
               >
-                <FaUndoAlt />
-              </span>
+                <input type="hidden" name="id" value={member.id} />
+                <input type="hidden" name="undoTodo" value={member.undoTotal} />
+                <input
+                  type="hidden"
+                  name="undoYesterday"
+                  value={member.undoYesterday}
+                />
+                <input
+                  type="hidden"
+                  name="undoSevendaysum"
+                  value={member.undoSevendaysum}
+                />
+                <button id="svgBtn" type="submit" className="bg-transparent">
+                  <FaUndoAlt />
+                </button>
+              </form>
             )}
             <div>
               {dayjs().day() === 1 ? "上週貢獻：" : "本週貢獻："}
@@ -184,36 +132,56 @@ function IndiviualMember(props: IndiviualMemberProps) {
           <div className="flex w-full items-center space-x-1 basis-1/4">
             <div className="text-lg">{member.name}</div>
           </div>
-
-          <div className="flex w-full basis-3/4 gap-1 items-center">
+          {/* 昨日貢獻表單 */}
+          <form
+            className="flex w-full basis-3/4 gap-1 items-center"
+            action={renewYesterdayPoint}
+          >
             <input
-              value={yesterdayPoint}
-              className="w-[80px] h-[40px] p-2"
-              onChange={(e) => setYesterdayPoint(e.target.value)}
               type="number"
+              name="yesterdayPoint"
+              className="w-[80px] h-[40px] p-2"
+              placeholder="昨日貢獻"
+              required
+            />
+            <input
+              type="hidden"
+              name="id"
+              value={member.id}
+              placeholder="族員id"
+            />
+            <input
+              type="hidden"
+              name="undoTotal"
+              value={member.total}
+              placeholder="總貢獻"
+            />
+            <input
+              type="hidden"
+              name="undoYesterday"
+              value={member.yesterday}
               placeholder="昨日貢獻"
             />
-            <Button
-              type="button"
-              onClick={() =>
-                renewYesterdayPoint(
-                  yesterdayPoint,
-                  member.id,
-                  member.total,
-                  member.yesterday,
-                  member.sevendaysum
-                )
-              }
-            >
-              確定
-            </Button>
+            <input
+              type="hidden"
+              name="undoSevendaysum"
+              value={member.sevendaysum}
+              placeholder="七日貢獻"
+            />
+            <input
+              type="hidden"
+              name="timeStamp"
+              value={today}
+              placeholder="日期"
+            />
+            <Button type="submit">確定</Button>
             <div
               className="text-3xl scale-x-[-1] cursor-pointer"
               onClick={() => flipCardSwitch()}
             >
               <TiArrowBackOutline />
             </div>
-          </div>
+          </form>
         </div>
       )}
     </>

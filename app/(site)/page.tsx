@@ -58,5 +58,13 @@ export default async function Home() {
   const member = await getMember();
   const timeStamp = await getTimeStamp();
 
-  return <>{member && <ListOfMembers members={member} />}</>;
+  return (
+    <>
+      {member.length !== 0 ? (
+        <ListOfMembers members={member} />
+      ) : (
+        <div>No Data Yet</div>
+      )}
+    </>
+  );
 }

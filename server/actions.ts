@@ -14,7 +14,7 @@ export async function addMember(formData: FormData) {
       yesterday: Number(memberYesterday),
     },
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
 export async function renewYesterdayPoint(formData: FormData) {
@@ -42,7 +42,7 @@ export async function renewYesterdayPoint(formData: FormData) {
       timeStamp: timeStamp as string,
     },
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
 export async function undoPoint(formData: FormData) {
@@ -60,7 +60,7 @@ export async function undoPoint(formData: FormData) {
       timeStamp: "0",
     },
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
 export async function removeMember(formData: FormData) {
@@ -70,5 +70,5 @@ export async function removeMember(formData: FormData) {
       id: id as string,
     },
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }

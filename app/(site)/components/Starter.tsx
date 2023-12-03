@@ -8,6 +8,8 @@ import Button from "@/app/components/Button";
 
 interface StarterProps {
   switch: () => void;
+  memberLists: any;
+  setMemberLists: any;
 }
 
 function Starter(props: StarterProps) {

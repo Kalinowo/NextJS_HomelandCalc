@@ -24,6 +24,8 @@ interface IndiviualMemberProps {
   member: any;
   index: number;
   switchStatus?: boolean;
+  memberLists?: any;
+  setMemberLists?: any;
 }
 
 let date = dayjs(new Date()).tz("Asia/Taipei");
@@ -31,7 +33,7 @@ let date = dayjs(new Date()).tz("Asia/Taipei");
 function IndiviualMember(props: IndiviualMemberProps) {
   const [flipCard, setFlipCard] = useState<boolean>(false);
   const [yesterdayPoint, setYesterdayPoint] = useState<any>("");
-  const { member, index, switchStatus } = props;
+  const { member, index, switchStatus, memberLists, setMemberLists } = props;
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -43,7 +45,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
 
   function renewYesterdayPoint(
     yesterdayPoint: any,
-    name: String,
+    id: String,
     undoTotal: any,
     undoYesterday: any,
     undoSevendaysum: any
@@ -54,7 +56,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
 
     axios
       .post("/api/yesterday/renew", {
-        name,
+        id,
         total,
         yesterday,
         sevendaysum,
@@ -70,14 +72,14 @@ function IndiviualMember(props: IndiviualMemberProps) {
   }
 
   function undoPoint(
-    name: String,
+    id: String,
     undoTotal: any,
     undoYesterday: any,
     undoSevendaysum: any
   ) {
     axios
       .post("/api/yesterday/undo", {
-        name,
+        id,
         undoTotal,
         undoYesterday,
         undoSevendaysum,
@@ -93,6 +95,10 @@ function IndiviualMember(props: IndiviualMemberProps) {
         id,
       })
       .then(() => {
+        const newMemberList = memberLists.filter(
+          (member: any) => member.id !== id
+        );
+        setMemberLists(newMemberList);
         router.refresh();
       });
   }
@@ -142,7 +148,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
                 className="cursor-pointer hover:text-red-600"
                 onClick={() =>
                   undoPoint(
-                    member.name,
+                    member.id,
                     member.undoTotal,
                     member.undoYesterday,
                     member.undoSevendaysum
@@ -193,7 +199,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
               onClick={() =>
                 renewYesterdayPoint(
                   yesterdayPoint,
-                  member.name,
+                  member.id,
                   member.total,
                   member.yesterday,
                   member.sevendaysum

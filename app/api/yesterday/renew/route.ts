@@ -5,7 +5,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const {
-      name,
+      id,
       total,
       yesterday,
       sevendaysum,
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       timeStamp,
     } = body;
     const post = await prisma.member.update({
-      where: { name: name },
+      where: { id },
       data: {
         total,
         yesterday,

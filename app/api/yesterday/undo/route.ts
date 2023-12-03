@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, undoTotal, undoYesterday, undoSevendaysum } = body;
+    const { id, undoTotal, undoYesterday, undoSevendaysum } = body;
 
     const post = await prisma.member.update({
-      where: { name: name },
+      where: { id },
       data: {
         total: undoTotal,
         yesterday: undoYesterday,

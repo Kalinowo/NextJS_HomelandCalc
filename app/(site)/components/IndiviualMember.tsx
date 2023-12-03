@@ -7,6 +7,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import weekday from "dayjs/plugin/weekday";
 
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import Button from "@/app/components/Button";
@@ -32,6 +33,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
   const [yesterdayPoint, setYesterdayPoint] = useState<any>("");
   const { member, index, switchStatus } = props;
   const { data: session } = useSession();
+  const router = useRouter();
 
   function flipCardSwitch() {
     setFlipCard((prev) => !prev);
@@ -61,7 +63,9 @@ function IndiviualMember(props: IndiviualMemberProps) {
         timeStamp: today,
       })
       .then(() => {
-        console.log("成功");
+        router.refresh();
+        setYesterdayPoint("");
+        setFlipCard(false);
       });
   }
 
@@ -79,7 +83,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
         undoSevendaysum,
       })
       .then(() => {
-        console.log("成功");
+        router.refresh();
       });
   }
 
@@ -89,7 +93,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
         id,
       })
       .then(() => {
-        console.log("成功");
+        router.refresh();
       });
   }
 

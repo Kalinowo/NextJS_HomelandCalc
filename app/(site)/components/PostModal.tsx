@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import Button from "@/app/components/Button";
 import { FaTimes } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 interface PostModalProps {
   openPostModal: () => void;
@@ -17,6 +18,8 @@ const PostModal = (props: PostModalProps) => {
   const [memberName, setMemberName] = useState<string>("");
   const [memberTotal, setMemberTotal] = useState<any>("");
   const [memberYesterday, setMemberYesterday] = useState<any>("");
+
+  const router = useRouter();
 
   function closePostModal(e: any) {
     if (modalRef.current === e.target) {
@@ -36,7 +39,7 @@ const PostModal = (props: PostModalProps) => {
         yesterday,
       })
       .then(() => {
-        console.log("成功");
+        router.refresh();
       })
       .catch((err) => {
         console.log(err);

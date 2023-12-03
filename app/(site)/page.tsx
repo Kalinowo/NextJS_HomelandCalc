@@ -11,8 +11,6 @@ dayjs.extend(weekday);
 
 let date = dayjs(new Date()).tz("Asia/Taipei");
 
-export const revalidate = 1;
-
 async function getTimeStamp() {
   const res = await prisma.reset.findMany();
   if (res.length) {

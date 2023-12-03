@@ -174,7 +174,9 @@ function IndiviualMember(props: IndiviualMemberProps) {
               value={today}
               placeholder="日期"
             />
-            <Button type="submit">確定</Button>
+            <Button type="submit" onClick={flipCardSwitch}>
+              確定
+            </Button>
             <div
               className="text-3xl scale-x-[-1] cursor-pointer"
               onClick={() => flipCardSwitch()}

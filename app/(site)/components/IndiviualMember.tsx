@@ -36,6 +36,12 @@ function IndiviualMember(props: IndiviualMemberProps) {
     setFlipCard((prev) => !prev);
   }
 
+  function manuallySubmit(e: any) {
+    const form = e.target.form;
+    form.requestSubmit();
+    setFlipCard((prev) => !prev);
+  }
+
   let today = date.format("YYYY-MM-DD");
 
   return (
@@ -174,9 +180,13 @@ function IndiviualMember(props: IndiviualMemberProps) {
               value={today}
               placeholder="日期"
             />
-            <Button type="button" onClick={flipCardSwitch}>
-              確定
-            </Button>
+            <button
+              id="svgBtn"
+              type="button"
+              onClick={(e) => manuallySubmit(e)}
+            >
+              Enter
+            </button>
             <div
               className="text-3xl scale-x-[-1] cursor-pointer"
               onClick={() => flipCardSwitch()}

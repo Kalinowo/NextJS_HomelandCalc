@@ -1,4 +1,5 @@
 "use server";
+import prisma from "@/app/libs/prismadb";
 import { revalidatePath } from "next/cache";
 
 export async function addMember(formData: FormData) {

@@ -60,11 +60,7 @@ export default async function Home() {
 
   return (
     <>
-      {member.length !== 0 ? (
-        <ListOfMembers members={member} />
-      ) : (
-        <div>No Data Yet</div>
-      )}
+      <ListOfMembers members={member} />
     </>
   );
 }

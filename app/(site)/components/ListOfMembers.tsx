@@ -66,15 +66,18 @@ function ListOfMembers(props: ListOfMembersProps) {
               </div>
             ))}
           </div>
-          <div className="flex flex-col gap-2 w-full px-4 py-2 border-solid border-2 border-black bg-red-50 rounded-xl">
-            {members
-              .filter((member: any) => member.family === selectFamily)
-              .map((member: any, index: number) => (
-                <div key={index}>
-                  <IndiviualMember member={member} index={index} />
-                </div>
-              ))}
-          </div>
+          {!(members.length === 0) && (
+            <div className="flex flex-col gap-2 w-full px-4 py-2 border-solid border-2 border-black bg-red-50 rounded-xl">
+              {members
+                .filter((member: any) => member.family === selectFamily)
+                .map((member: any, index: number) => (
+                  <div key={index}>
+                    <IndiviualMember member={member} index={index} />
+                  </div>
+                ))}
+            </div>
+          )}
+          {members.length === 0 && <div>No Data Yet</div>}
         </div>
       )}
     </>

@@ -174,7 +174,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
               value={today}
               placeholder="日期"
             />
-            <Button type="submit" onClick={flipCardSwitch}>
+            <Button type="button" onClick={flipCardSwitch}>
               確定
             </Button>
             <div

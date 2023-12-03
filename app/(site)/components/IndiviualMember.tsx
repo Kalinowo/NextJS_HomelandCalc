@@ -99,7 +99,6 @@ function IndiviualMember(props: IndiviualMemberProps) {
           (member: any) => member.id !== id
         );
         setMemberLists(newMemberList);
-        router.refresh();
       });
   }
 

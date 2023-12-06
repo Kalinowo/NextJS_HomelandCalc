@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import weekday from "dayjs/plugin/weekday";
+import { Suspense } from "react";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -54,13 +55,17 @@ async function getMember() {
   return res;
 }
 
-export default async function Home() {
+export async function Members() {
   const member = await getMember();
-  const timeStamp = await getTimeStamp();
+  return <ListOfMembers members={member} />;
+}
 
+export default async function Home() {
   return (
     <>
-      <ListOfMembers members={member} />
+      <Suspense fallback={<div>Loading data...</div>}>
+        <Members />
+      </Suspense>
     </>
   );
 }

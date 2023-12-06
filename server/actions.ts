@@ -19,12 +19,16 @@ export async function addMember(formData: FormData) {
 }
 
 export async function renewYesterdayPoint(formData: FormData) {
+  const timeStampCheck = formData.get("timeStampCheck");
+  const timeStamp = formData.get("timeStamp");
+  if (timeStampCheck === timeStamp) {
+    return;
+  }
   const yesterdayPoint = formData.get("yesterdayPoint");
   const id = formData.get("id");
   const undoTotal = formData.get("undoTotal");
   const undoYesterday = formData.get("undoYesterday");
   const undoSevendaysum = formData.get("undoSevendaysum");
-  const timeStamp = formData.get("timeStamp");
 
   let yesterday = Number(yesterdayPoint);
   let total = yesterday + Number(undoTotal);
@@ -40,6 +44,7 @@ export async function renewYesterdayPoint(formData: FormData) {
       sevendaysum,
       undoYesterday: Number(undoYesterday),
       undoTotal: Number(undoTotal),
+      undoSevendaysum: Number(undoSevendaysum),
       timeStamp: timeStamp as string,
     },
   });
@@ -69,6 +74,20 @@ export async function removeMember(formData: FormData) {
   const removeBtn = await prisma?.member.delete({
     where: {
       id: id as string,
+    },
+  });
+  revalidatePath("/", "layout");
+}
+
+export async function updateName(formData: FormData) {
+  const id = formData.get("id");
+  const name = formData.get("name");
+  const updateBtn = await prisma?.member.update({
+    where: {
+      id: id as string,
+    },
+    data: {
+      name: name as string,
     },
   });
   revalidatePath("/", "layout");

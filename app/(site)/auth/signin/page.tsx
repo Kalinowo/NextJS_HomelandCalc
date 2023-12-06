@@ -8,7 +8,7 @@ import Button from "@/app/components/Button";
 
 export default function SignIn() {
   const [showError, setShowError] = useState("");
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const userNameRef = useRef<any>();
   const passwordRef = useRef<any>();
@@ -43,6 +43,10 @@ export default function SignIn() {
       .then(() => {
         console.log("成功");
       });
+  }
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
   }
 
   return (

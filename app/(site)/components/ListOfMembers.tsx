@@ -24,7 +24,7 @@ function ListOfMembers(props: ListOfMembersProps) {
   }
 
   if (status === "loading") {
-    return <div>Loading</div>;
+    return <div>Loading data...</div>;
   }
 
   return (

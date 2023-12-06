@@ -1,10 +1,11 @@
-import ListOfMembers from "./components/ListOfMembers";
 import prisma from "@/app/libs/prismadb";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import weekday from "dayjs/plugin/weekday";
 import { Suspense } from "react";
+
+import Members from "./components/Member";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -45,22 +46,8 @@ async function getTimeStamp() {
   return null;
 }
 
-async function getMember() {
-  const res = await prisma.member.findMany({
-    orderBy: {
-      total: "desc",
-    },
-  });
-
-  return res;
-}
-
-export async function Members() {
-  const member = await getMember();
-  return <ListOfMembers members={member} />;
-}
-
 export default async function Home() {
+  const timeStamp = await getTimeStamp();
   return (
     <>
       <Suspense fallback={<div>Loading data...</div>}>

@@ -10,7 +10,7 @@ export default function ActionSubmit() {
       {pending ? (
         <AiOutlineLoading3Quarters className="animate-spin" />
       ) : (
-        "Login"
+        "確定"
       )}
     </Button>
   );

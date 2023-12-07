@@ -128,7 +128,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
                       type="submit"
                       className="bg-transparent"
                     >
-                      <FaUndoAlt />
+                      <SvgActionSubmit defaultButton={<FaUndoAlt />} />
                     </button>
                   )}
                 </form>
@@ -158,7 +158,10 @@ function IndiviualMember(props: IndiviualMemberProps) {
           {switchStatus && (
             <form
               action={async (formData) => {
-                await updateName(formData).then(() => setUpdateNameBtn(false));
+                await updateName(formData).then(() => {
+                  setNewName("");
+                  setUpdateNameBtn(false);
+                });
               }}
               className="relative top-[-5px] w-full rounded-b-lg overflow-hidden duration-300"
               style={updateNameBtn ? { height: "30px" } : { height: "0px" }}
@@ -189,7 +192,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
           key={index}
           className={
             loading
-              ? "flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1 animate-pulse"
+              ? "flex w-full bg-violet-400 p-2  rounded-lg h-[65px] overflow-auto gap-1 animate-pulse"
               : "flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1"
           }
         >
@@ -251,13 +254,8 @@ function IndiviualMember(props: IndiviualMemberProps) {
               value={today}
               placeholder="今天日期"
             />
-            <button
-              id="svgBtn"
-              type="submit"
-              className="hover:text-red-400"
-              disabled={loading}
-            >
-              Enter
+            <button id="svgBtn" type="submit" className="hover:text-red-400">
+              <SvgActionSubmit defaultButton="Enter" />
             </button>
             <div
               className="text-3xl scale-x-[-1] cursor-pointer  hover:text-red-400"

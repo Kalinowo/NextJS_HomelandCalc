@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios";
 import Image from "next/image";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import weekday from "dayjs/plugin/weekday";
 import { useSession } from "next-auth/react";
+
+import SvgActionSubmit from "../actionComponents/SvgActionSubmit";
+import { RiDeleteBin6Fill } from "react-icons/ri";
 
 import {
   renewYesterdayPoint,
@@ -18,7 +20,6 @@ import { TiHeartFullOutline } from "react-icons/ti";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { FaUndoAlt } from "react-icons/fa";
 import { RiPencilFill } from "react-icons/ri";
-import { RiDeleteBin6Fill } from "react-icons/ri";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -36,21 +37,12 @@ function IndiviualMember(props: IndiviualMemberProps) {
   const [flipCard, setFlipCard] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>("");
   const [updateNameBtn, setUpdateNameBtn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const { member, index, switchStatus } = props;
   const { data: session } = useSession();
 
   function flipCardSwitch() {
     setFlipCard((prev) => !prev);
-  }
-
-  function manuallySubmit(e: any, type?: string) {
-    const form = e.target.form;
-    form.requestSubmit();
-    if (type) {
-      setUpdateNameBtn(false);
-    } else {
-      setFlipCard((prev) => !prev);
-    }
   }
 
   let today = date.format("YYYY-MM-DD");
@@ -88,19 +80,19 @@ function IndiviualMember(props: IndiviualMemberProps) {
                   <button
                     id="svgBtn"
                     type="button"
-                    className="text-2xl hover:text-red-600 cursor-pointer"
+                    className="text-2xl hover:text-red-400 cursor-pointer"
                     onClick={() => setUpdateNameBtn(!updateNameBtn)}
                   >
                     <RiPencilFill />
                   </button>
                   {/* 刪除表單 */}
                   <form
-                    className="flex text-2xl hover:text-red-600 cursor-pointer"
+                    className="flex text-2xl hover:text-red-400 cursor-pointer"
                     action={removeMember}
                   >
                     <input type="hidden" name="id" value={member.id} />
                     <button id="svgBtn" type="submit">
-                      <RiDeleteBin6Fill />
+                      <SvgActionSubmit defaultButton={<RiDeleteBin6Fill />} />
                     </button>
                   </form>
                 </>
@@ -111,7 +103,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
               {session && (
                 // undo表單
                 <form
-                  className="cursor-pointer hover:text-red-600"
+                  className="cursor-pointer hover:text-red-400"
                   action={undoPoint}
                 >
                   <input type="hidden" name="id" value={member.id} />
@@ -165,7 +157,9 @@ function IndiviualMember(props: IndiviualMemberProps) {
           {/* 改名表單 */}
           {switchStatus && (
             <form
-              action={updateName}
+              action={async (formData) => {
+                await updateName(formData).then(() => setUpdateNameBtn(false));
+              }}
               className="relative top-[-5px] w-full rounded-b-lg overflow-hidden duration-300"
               style={updateNameBtn ? { height: "30px" } : { height: "0px" }}
             >
@@ -181,10 +175,9 @@ function IndiviualMember(props: IndiviualMemberProps) {
                 />
                 <button
                   type="submit"
-                  className="relative right-1 border-solid border-2 border-black bg-black text-white rounded-br-lg"
-                  onClick={(e) => manuallySubmit(e, "改名")}
+                  className="relative right-1 border-solid border-2 border-black bg-black text-white rounded-br-lg hover:text-red-400"
                 >
-                  Enter
+                  <SvgActionSubmit defaultButton="Enter" />
                 </button>
               </div>
             </form>
@@ -194,7 +187,11 @@ function IndiviualMember(props: IndiviualMemberProps) {
       {flipCard && (
         <div
           key={index}
-          className="flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1"
+          className={
+            loading
+              ? "flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1 animate-pulse"
+              : "flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1"
+          }
         >
           <div className="flex w-full items-center space-x-1 basis-1/4">
             <div className="text-lg">{member.name}</div>
@@ -202,13 +199,20 @@ function IndiviualMember(props: IndiviualMemberProps) {
           {/* 昨日貢獻表單 */}
           <form
             className="flex w-full basis-3/4 gap-1 items-center"
-            action={renewYesterdayPoint}
+            action={async (formData) => {
+              setLoading(true);
+              await renewYesterdayPoint(formData).then(() => {
+                setLoading(false);
+                setFlipCard(false);
+              });
+            }}
           >
             <input
               type="number"
               name="yesterdayPoint"
               className="w-[80px] h-[40px] p-2"
               placeholder="昨日貢獻"
+              disabled={loading}
               required
             />
             <input
@@ -250,12 +254,13 @@ function IndiviualMember(props: IndiviualMemberProps) {
             <button
               id="svgBtn"
               type="submit"
-              onClick={(e) => manuallySubmit(e)}
+              className="hover:text-red-400"
+              disabled={loading}
             >
               Enter
             </button>
             <div
-              className="text-3xl scale-x-[-1] cursor-pointer  hover:text-red-600"
+              className="text-3xl scale-x-[-1] cursor-pointer  hover:text-red-400"
               onClick={() => flipCardSwitch()}
             >
               <TiArrowBackOutline />

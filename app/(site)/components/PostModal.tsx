@@ -5,6 +5,8 @@ import Button from "@/app/components/Button";
 import { FaTimes } from "react-icons/fa";
 import { addMember } from "@/server/actions";
 
+import ActionSubmit from "../actionComponents/ActionSubmit";
+
 interface PostModalProps {
   openPostModal: () => void;
 }
@@ -78,9 +80,7 @@ const PostModal = (props: PostModalProps) => {
             </div>
           </div>
           <div className="flex gap-1">
-            <Button type="submit" flexBasis="60%">
-              確定
-            </Button>
+            <ActionSubmit />
             <Button type="button" onClick={openPostModal} flexBasis="40%">
               取消
             </Button>

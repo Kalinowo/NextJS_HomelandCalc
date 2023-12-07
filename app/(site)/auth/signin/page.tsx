@@ -4,10 +4,13 @@ import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Button from "@/app/components/Button";
 
 export default function SignIn() {
   const [showError, setShowError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const { data: session, status } = useSession();
 
   const userNameRef = useRef<any>();
@@ -17,6 +20,7 @@ export default function SignIn() {
 
   async function onSubmit(e: any) {
     e.preventDefault();
+    setLoading(true);
     const res = await signIn("credentials", {
       name: userNameRef.current.value,
       hashedPassword: passwordRef.current.value,
@@ -26,8 +30,10 @@ export default function SignIn() {
       if (res) {
         //待修改, 讓error顯示到畫面上
         if (res.error) {
+          setLoading(false);
           setShowError(res.error);
         } else {
+          setLoading(false);
           router.push("/");
         }
       }
@@ -92,13 +98,17 @@ export default function SignIn() {
                   {showError}
                 </div>
               )}
-              <div className="flex mt-2">
+              <div className="flex mt-2 w-full">
                 <Button
                   type="submit"
                   flexBasis="100%"
-                  disabled={session ? true : false}
+                  disabled={session || loading ? true : false}
                 >
-                  Login
+                  {loading ? (
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  ) : (
+                    "Login"
+                  )}
                 </Button>
               </div>
             </form>
@@ -118,7 +128,7 @@ export default function SignIn() {
                 onClick={() => {
                   signIn("google", { redirect: false });
                 }}
-                disabled={session ? true : false}
+                disabled={session || loading ? true : false}
               >
                 Google Login
               </Button>

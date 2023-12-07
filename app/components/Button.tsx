@@ -13,7 +13,7 @@ const Button = (props: ButtonProps) => {
     <button
       type={type}
       onClick={onClick}
-      className="text-red-50 rounded-md px-3 py-2 whitespace-nowrap"
+      className="flex items-center justify-center text-red-50 rounded-md px-3 py-2 whitespace-nowrap"
       disabled={disabled}
       style={{ flexBasis: flexBasis }}
     >

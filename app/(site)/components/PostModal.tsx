@@ -12,10 +12,6 @@ interface PostModalProps {
 }
 
 const PostModal = (props: PostModalProps) => {
-  const [memberName, setMemberName] = useState<string>("");
-  const [memberTotal, setMemberTotal] = useState<any>("");
-  const [memberYesterday, setMemberYesterday] = useState<any>("");
-
   const { data: session } = useSession();
   const { openPostModal } = props;
 
@@ -34,49 +30,34 @@ const PostModal = (props: PostModalProps) => {
           <div className="flex flex-row relative border-solid border-2 border-black rounded-md">
             <input
               type="text"
-              value={memberName}
               name="name"
               placeholder="族員名稱"
               className="p-2 w-full outline-none border-none rounded-md"
-              onChange={(e) => setMemberName(e.target.value)}
             />
             <div className="relative right-1 flex items-center h-[40px]">
-              <FaTimes
-                className="cursor-pointer hover:text-red-500"
-                onClick={() => setMemberName("")}
-              />
+              <FaTimes className="cursor-pointer hover:text-red-500" />
             </div>
           </div>
           <div className="flex flex-row relative border-solid border-2 border-black rounded-md">
             <input
               type="text"
-              value={memberTotal}
               name="total"
               placeholder="總貢獻"
               className="p-2 w-full outline-none border-none rounded-md"
-              onChange={(e) => setMemberTotal(e.target.value)}
             />
             <div className="relative right-1 flex items-center h-[40px]">
-              <FaTimes
-                className="cursor-pointer hover:text-red-500"
-                onClick={() => setMemberTotal("")}
-              />
+              <FaTimes className="cursor-pointer hover:text-red-500" />
             </div>
           </div>
           <div className="flex flex-row relative border-solid border-2 border-black rounded-md">
             <input
               type="text"
-              value={memberYesterday}
               name="yesterday"
               placeholder="昨日貢獻"
               className="p-2 w-full outline-none border-none rounded-md"
-              onChange={(e) => setMemberYesterday(e.target.value)}
             />
             <div className="relative right-1 flex items-center h-[40px]">
-              <FaTimes
-                className="cursor-pointer hover:text-red-500"
-                onClick={() => setMemberYesterday("")}
-              />
+              <FaTimes className="cursor-pointer hover:text-red-500" />
             </div>
           </div>
           <div className="flex gap-1">

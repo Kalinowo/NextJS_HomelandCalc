@@ -8,6 +8,7 @@ import weekday from "dayjs/plugin/weekday";
 import { useSession } from "next-auth/react";
 
 import SvgActionSubmit from "../actionComponents/SvgActionSubmit";
+import SevendaysumSubmit from "../actionComponents/SevendaysumSubmit";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 
 import {
@@ -211,14 +212,6 @@ function IndiviualMember(props: IndiviualMemberProps) {
             }}
           >
             <input
-              type="number"
-              name="yesterdayPoint"
-              className="w-[80px] h-[40px] p-2"
-              placeholder="昨日貢獻"
-              disabled={loading}
-              required
-            />
-            <input
               type="hidden"
               name="id"
               value={member.id}
@@ -254,9 +247,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
               value={today}
               placeholder="今天日期"
             />
-            <button id="svgBtn" type="submit" className="hover:text-red-400">
-              <SvgActionSubmit defaultButton="Enter" />
-            </button>
+            <SevendaysumSubmit />
             <div
               className="text-3xl scale-x-[-1] cursor-pointer  hover:text-red-400"
               onClick={() => flipCardSwitch()}

@@ -37,7 +37,7 @@ function ListOfMembers(props: ListOfMembersProps) {
             {members
               .filter((member: any) => member.family === session?.user.name)
               .map((member: any, index: number) => (
-                <div key={index}>
+                <div key={member.id}>
                   <IndiviualMember
                     member={member}
                     index={index}

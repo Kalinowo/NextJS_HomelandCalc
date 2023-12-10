@@ -1,4 +1,3 @@
-import prisma from "@/app/libs/prismadb";
 import { Suspense } from "react";
 import Members from "./components/Member";
 

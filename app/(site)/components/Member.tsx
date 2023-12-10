@@ -17,7 +17,8 @@ async function getTimeStamp() {
   if (res.length) {
     if (
       dayjs().weekday(2).format("YYYY-MM-DD") !== res[0].timeStamp &&
-      dayjs().day() !== 0
+      dayjs().day() !== 0 &&
+      dayjs().day() !== 1
     ) {
       await prisma.member.updateMany({
         where: {},
@@ -55,6 +56,7 @@ async function getMember() {
 
 export default async function Members() {
   const member = await getMember();
+
   const timeStamp = await getTimeStamp();
   return <ListOfMembers members={member} />;
 }

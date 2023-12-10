@@ -38,7 +38,6 @@ function IndiviualMember(props: IndiviualMemberProps) {
   const [flipCard, setFlipCard] = useState<boolean>(false);
   const [newName, setNewName] = useState<string>("");
   const [updateNameBtn, setUpdateNameBtn] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const { member, index, switchStatus } = props;
   const { data: session } = useSession();
 
@@ -189,14 +188,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
         </>
       )}
       {flipCard && (
-        <div
-          key={index}
-          className={
-            loading
-              ? "flex w-full bg-violet-400 p-2  rounded-lg h-[65px] overflow-auto gap-1 animate-pulse"
-              : "flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1"
-          }
-        >
+        <div className="flex w-full bg-violet-200 p-2  rounded-lg h-[65px] overflow-auto gap-1">
           <div className="flex w-full items-center space-x-1 basis-1/4">
             <div className="text-lg">{member.name}</div>
           </div>
@@ -204,9 +196,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
           <form
             className="flex w-full basis-3/4 gap-1 items-center"
             action={async (formData) => {
-              setLoading(true);
               await renewYesterdayPoint(formData).then(() => {
-                setLoading(false);
                 setFlipCard(false);
               });
             }}

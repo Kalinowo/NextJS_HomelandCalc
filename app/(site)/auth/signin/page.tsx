@@ -126,7 +126,10 @@ export default function SignIn() {
               <Button
                 type="button"
                 onClick={() => {
-                  signIn("google", { redirect: false });
+                  signIn("google", {
+                    callbackUrl: "/auth/signin",
+                    redirect: false,
+                  });
                 }}
                 disabled={session || loading ? true : false}
               >

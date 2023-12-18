@@ -1,19 +1,50 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { weeklyReset, generateTimeStamp } from "@/server/weeklyreset";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import weekday from "dayjs/plugin/weekday";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(weekday);
+
+let date = dayjs(new Date()).tz("Asia/Taipei");
 
 import IndiviualMember from "./IndiviualMember";
 import Starter from "./Starter";
 
 interface ListOfMembersProps {
   members: any;
+  timeStamp: Array<any> | null;
 }
 
 function ListOfMembers(props: ListOfMembersProps) {
-  const { members } = props;
+  const { members, timeStamp } = props;
   const { data: session, status } = useSession();
   const [selectFamily, setSelectFamily] = useState<string>("");
   const [manageSwitch, setManageSwitch] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkTimeStamp = async () => {
+      if (timeStamp) {
+        if (
+          timeStamp[0].timeStamp === date.weekday(2).format("YYYY-MM-DD") &&
+          date.day() === 0 &&
+          date.day() === 1
+        ) {
+          return;
+        } else {
+          await weeklyReset(timeStamp[0].timeStamp);
+        }
+      } else {
+        await generateTimeStamp();
+      }
+    };
+    checkTimeStamp();
+  }, []);
 
   let familyCount = Array.from(
     new Set(members.map((member: any) => member.family))

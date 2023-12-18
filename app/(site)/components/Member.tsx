@@ -1,47 +1,10 @@
 import prisma from "@/app/libs/prismadb";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import weekday from "dayjs/plugin/weekday";
-
 import ListOfMembers from "./ListOfMembers";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(weekday);
-
-let date = dayjs(new Date()).tz("Asia/Taipei");
 
 async function getTimeStamp() {
   const res = await prisma.reset.findMany();
-  if (res.length) {
-    if (
-      dayjs().weekday(2).format("YYYY-MM-DD") !== res[0].timeStamp &&
-      dayjs().day() !== 0 &&
-      dayjs().day() !== 1
-    ) {
-      await prisma.member.updateMany({
-        where: {},
-        data: {
-          sevendaysum: 0,
-          undoSevendaysum: 0,
-        },
-      });
-      await prisma.reset.updateMany({
-        where: {},
-        data: {
-          timeStamp: dayjs().weekday(2).format("YYYY-MM-DD"),
-        },
-      });
-    }
-  } else {
-    await prisma.reset.create({
-      data: {
-        timeStamp: dayjs().weekday(2).format("YYYY-MM-DD"),
-      },
-    });
-  }
-  return null;
+
+  return res;
 }
 
 async function getMember() {
@@ -56,7 +19,7 @@ async function getMember() {
 
 export default async function Members() {
   const member = await getMember();
-
   const timeStamp = await getTimeStamp();
-  return <ListOfMembers members={member} />;
+
+  return <ListOfMembers members={member} timeStamp={timeStamp} />;
 }

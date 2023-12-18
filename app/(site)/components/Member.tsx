@@ -1,8 +1,12 @@
 import prisma from "@/app/libs/prismadb";
 import ListOfMembers from "./ListOfMembers";
+import { generateTimeStamp } from "@/server/weeklyreset";
 
 async function getTimeStamp() {
   const res = await prisma.reset.findMany();
+  if (!res.length) {
+    await generateTimeStamp();
+  }
 
   return res;
 }

@@ -18,7 +18,7 @@ import Starter from "./Starter";
 
 interface ListOfMembersProps {
   members: any;
-  timeStamp: Array<any> | null;
+  timeStamp: Array<any>;
 }
 
 function ListOfMembers(props: ListOfMembersProps) {
@@ -27,20 +27,23 @@ function ListOfMembers(props: ListOfMembersProps) {
   const [selectFamily, setSelectFamily] = useState<string>("");
   const [manageSwitch, setManageSwitch] = useState<boolean>(false);
 
+  console.log(timeStamp);
   useEffect(() => {
     const checkTimeStamp = async () => {
-      if (timeStamp) {
+      if (timeStamp.length) {
         if (
-          timeStamp[0].timeStamp === date.weekday(2).format("YYYY-MM-DD") &&
-          date.day() === 0 &&
-          date.day() === 1
+          timeStamp[0].timeStamp !== date.weekday(2).format("YYYY-MM-DD") &&
+          date.day() !== 0 &&
+          date.day() !== 1
         ) {
-          return;
-        } else {
+          console.log("1");
           await weeklyReset(timeStamp[0].timeStamp);
+        } else {
+          console.log("2");
+          return;
         }
       } else {
-        await generateTimeStamp();
+        return;
       }
     };
     checkTimeStamp();

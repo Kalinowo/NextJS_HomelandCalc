@@ -1,3 +1,4 @@
+"use server";
 import prisma from "@/app/libs/prismadb";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";

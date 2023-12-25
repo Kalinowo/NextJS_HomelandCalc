@@ -59,7 +59,6 @@ const authOptions: AuthOptions = {
           },
         });
         session.user.id = sessionUser?.id;
-        session.user.replaceName = sessionUser?.replaceName;
       }
 
       return session;

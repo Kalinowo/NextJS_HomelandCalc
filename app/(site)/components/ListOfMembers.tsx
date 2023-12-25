@@ -67,9 +67,6 @@ function ListOfMembers(props: ListOfMembersProps) {
     return <div>Loading data...</div>;
   }
 
-  console.log(session);
-  console.log(replaceFamilyName);
-
   return (
     <>
       <Starter switch={turnManageSwitch} />

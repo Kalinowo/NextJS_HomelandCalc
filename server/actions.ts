@@ -92,3 +92,38 @@ export async function updateName(formData: FormData) {
   });
   revalidatePath("/", "layout");
 }
+
+export async function replaceName(formData: FormData) {
+  const name = formData.get("name");
+  const replaceName = formData.get("replaceName");
+
+  const checkFamilyName = await prisma?.user.findUnique({
+    where: {
+      name: replaceName as string,
+    },
+  });
+
+  if (checkFamilyName) {
+    throw new Error("name exists");
+  }
+
+  const updateFamilyName = await prisma?.user.update({
+    where: {
+      name: name as string,
+    },
+    data: {
+      name: replaceName as string,
+    },
+  });
+
+  const updateAllMember = await prisma?.member.updateMany({
+    where: {
+      family: name as string,
+    },
+    data: {
+      family: replaceName as string,
+    },
+  });
+
+  revalidatePath("/", "layout");
+}

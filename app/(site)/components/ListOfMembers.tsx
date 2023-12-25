@@ -1,20 +1,25 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { weeklyReset, generateTimeStamp } from "@/server/weeklyreset";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import weekday from "dayjs/plugin/weekday";
+import { RiPencilFill } from "react-icons/ri";
+import { FaCheck } from "react-icons/fa";
+
+import { weeklyReset } from "@/server/weeklyreset";
+import { replaceName } from "@/server/actions";
+
+import SvgActionSubmit from "../actionComponents/SvgActionSubmit";
+import IndiviualMember from "./IndiviualMember";
+import Starter from "./Starter";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(weekday);
 
 let date = dayjs(new Date()).tz("Asia/Taipei");
-
-import IndiviualMember from "./IndiviualMember";
-import Starter from "./Starter";
 
 interface ListOfMembersProps {
   members: any;
@@ -23,11 +28,12 @@ interface ListOfMembersProps {
 
 function ListOfMembers(props: ListOfMembersProps) {
   const { members, timeStamp } = props;
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const [selectFamily, setSelectFamily] = useState<string>("");
+  const [replaceFamilyName, setReplaceFamilyName] = useState<string>("");
   const [manageSwitch, setManageSwitch] = useState<boolean>(false);
+  const [faimlyNameSwitch, setFamilyNameSwitch] = useState<boolean>(false);
 
-  console.log(timeStamp);
   useEffect(() => {
     const checkTimeStamp = async () => {
       if (timeStamp.length) {
@@ -61,12 +67,58 @@ function ListOfMembers(props: ListOfMembersProps) {
     return <div>Loading data...</div>;
   }
 
+  console.log(session);
+  console.log(replaceFamilyName);
+
   return (
     <>
       <Starter switch={turnManageSwitch} />
       {session && (
         <>
-          <div className="text-3xl my-2 font-bold">{session.user.name}</div>
+          <div className="flex text-3xl my-2 font-bold">
+            <div className="relative">
+              {session.user.name}
+              <form
+                className="absolute top-0 right-0 duration-100 overflow-hidden"
+                style={faimlyNameSwitch ? { width: "200px" } : { width: "0px" }}
+                action={async (formData) => {
+                  await replaceName(formData)
+                    .then(() => {
+                      update({ name: replaceFamilyName });
+                      setFamilyNameSwitch(false);
+                    })
+                    .catch((err) => console.log(err));
+                }}
+              >
+                <input type="hidden" name="name" value={session.user.name} />
+                <div className="flex border-solid border-2 border-black bg-white overflow-hidden w-full">
+                  <input
+                    type="text"
+                    name="replaceName"
+                    value={replaceFamilyName}
+                    onChange={(e: any) => setReplaceFamilyName(e.target.value)}
+                    className="w-full outline-none px-1"
+                  />
+                  <button
+                    id="svgBtn"
+                    type="submit"
+                    className="border-left-solid border-l-2 border-black px-1 hover:text-red-400"
+                  >
+                    <SvgActionSubmit defaultButton={<FaCheck />} />
+                  </button>
+                </div>
+              </form>
+            </div>
+            <button
+              id="svgBtn"
+              type="button"
+              className="text-2xl hover:text-red-400 cursor-pointer"
+              onClick={() => setFamilyNameSwitch(!faimlyNameSwitch)}
+            >
+              <RiPencilFill />
+            </button>
+          </div>
+
           <div className="flex flex-col gap-2 w-full px-4 py-2 border-solid border-2 border-black bg-red-50 rounded-xl">
             {members
               .filter((member: any) => member.family === session?.user.name)

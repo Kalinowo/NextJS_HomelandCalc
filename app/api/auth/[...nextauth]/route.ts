@@ -59,9 +59,16 @@ const authOptions: AuthOptions = {
           },
         });
         session.user.id = sessionUser?.id;
+        session.user.replaceName = sessionUser?.replaceName;
       }
 
       return session;
+    },
+    jwt({ token, trigger, session }) {
+      if (trigger === "update" && session?.name) {
+        token.name = session.name;
+      }
+      return token;
     },
   },
   debug: process.env.NODE_ENV === "development",

@@ -9,7 +9,6 @@ import { useSession } from "next-auth/react";
 
 import SvgActionSubmit from "../actionComponents/SvgActionSubmit";
 import SevendaysumSubmit from "../actionComponents/SevendaysumSubmit";
-import { RiDeleteBin6Fill } from "react-icons/ri";
 
 import {
   renewYesterdayPoint,
@@ -17,6 +16,8 @@ import {
   removeMember,
   updateName,
 } from "@/server/actions";
+
+import { RiDeleteBin6Fill } from "react-icons/ri";
 import { TiHeartFullOutline } from "react-icons/ti";
 import { TiArrowBackOutline } from "react-icons/ti";
 import { FaUndoAlt } from "react-icons/fa";
@@ -64,7 +65,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
                 : () => flipCardSwitch()
             }
           >
-            <div className="flex w-full items-center space-x-1">
+            <div className="flex w-full items-center space-x-1 basis-[120%]">
               <div className="hidden border-solid border-2 border-black rounded h-full sm:block">
                 <Image
                   className="w-full h-full"
@@ -99,7 +100,7 @@ function IndiviualMember(props: IndiviualMemberProps) {
               )}
             </div>
 
-            <div className="flex w-full items-center justify-center whitespace-nowrap gap-1">
+            <div className="flex w-full items-center whitespace-nowrap gap-1">
               {session && (
                 // undo表單
                 <form
